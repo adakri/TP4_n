@@ -1,0 +1,34 @@
+xmin
+0.
+xmax
+0.3
+hx
+0.1
+ymin
+-1
+ymax
+1
+hy
+0.5
+sigma
+0.1
+t0
+0
+tfinal
+0.2
+dt
+0.1
+scheme
+ExplicitEuler
+# ExplicitEuler = Explicit Euler, ImplicitEuler = Implicit Euler
+results
+resultsVerySimple
+# Boundary conditions
+LeftBoundCond
+Dirichlet
+RightBoundCond
+Dirichlet
+DownBoundCond
+Dirichlet
+UpBoundCond
+Dirichlet
