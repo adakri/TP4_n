@@ -17,11 +17,15 @@ public:
 	//méthodes
 	Eigen::VectorXd InitialCondition();
 
-	Eigen::MatrixXd BuildLaplacianMatrix();///
+	Eigen::MatrixXd BuildLaplacianMatrix();///to be continued
 
-	void BuildSourceTerm(double t);
+	Eigen::VectorXd BuildSourceTerm(double t);
+
+	Eigen::MatrixXd BuildidentityMatrix();
 
 	Eigen::MatrixXd Get_Matrix();
+
+	Eigen::MatrixXd Get_IMatrix();
 
 	Eigen::VectorXd Getsource_term();
 

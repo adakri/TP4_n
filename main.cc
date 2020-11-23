@@ -26,7 +26,27 @@ int main(int argc, char** argv)
   Laplacian* lap = new Laplacian(function, df);
   // Pointeur vers la classe TimeScheme (discrétisation en temps=)
   TimeScheme* time_scheme = NULL;
+  
+  
+  //intermediate tests
+  cout<<"---------------------this is your intermediate test-----------------"<<endl;
+  cout<<"---------------------this is your laplacian matrix-----------------"<<endl;
+  MatrixXd M= lap -> Get_Matrix();
+  cout<<M<<endl;
+  cout<<"---------------------this is your identity matrix-----------------"<<endl;
+  MatrixXd I= lap -> Get_IMatrix();
+  cout<<I<<endl;
 
+//  VectorXd exact_sol = lap->ExactSolution(df->Get_tfinal());
+//  VectorXd approx_sol = time_scheme->GetSolution();
+//  double error = ((approx_sol-exact_sol).array().abs()).maxCoeff();
+//  cout << "Erreur = " << error << endl;
+  cout<<"---------source term------"<<endl;
+  VectorXd source_term = lap -> Getsource_term();
+  cout<<source_term<<endl;
+
+
+  cout<<"---------------------the end-----------------"<<endl;
   //Tests
   int Nx,Ny;
   Nx= df ->Get_Nx();

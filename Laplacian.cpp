@@ -62,6 +62,8 @@ MatrixXd Laplacian::BuildLaplacianMatrix()
       triplets.push_back({i,i+1,b});
   }
   B.setFromTriplets(triplets.begin(), triplets.end());
+
+
   //contruire T
   b=-1/(hy*hy);
   SparseMatrix<double> T(Nx,Ny);
@@ -71,12 +73,12 @@ MatrixXd Laplacian::BuildLaplacianMatrix()
     triplets1.push_back({i,i,b});
     if (i > 0)
       triplets1.push_back({i,i-1,0.});
-    if (i < B.rows()-1)
+    if (i < T.rows()-1)
       triplets1.push_back({i,i+1,0.});
   }
   T.setFromTriplets(triplets1.begin(), triplets1.end());
-
-
+  //construction de H à continuer
+  
 
   return B;
   }
@@ -85,7 +87,7 @@ MatrixXd Laplacian::BuildLaplacianMatrix()
 
 
 
-void Laplacian::BuildSourceTerm(double t)
+VectorXd Laplacian::BuildSourceTerm(double t)
 {
   int Nx,Ny;
   double xmin,xmax,ymin,ymax,hx,hy;
@@ -110,7 +112,12 @@ void Laplacian::BuildSourceTerm(double t)
 };
 
 
-MatrixXd Laplacian::Get_Matrix(){};
+MatrixXd Laplacian::Get_Matrix()
+{
+
+  MatrixXd M=Laplacian::BuildLaplacianMatrix();
+  return M;
+};
 
 
 VectorXd Laplacian::Getsource_term()
@@ -128,17 +135,34 @@ VectorXd Laplacian::Getsource_term()
   Ny=_df -> Get_Ny();
   VectorXd source_term(Nx*Ny);
 
-  //juste por faire fonctionner
-  double t=0.;
-
-  for (int i=0; i<Nx; i++ )
-  {
-    for(int j=0; j<Ny; j++)
-    {
-      source_term(i+j*Nx)=_fct -> SourceFunction(xmin+i*hx,ymin+j*hy,t);
-    }
-  }
   return source_term;
+};
+
+//idendity matrix
+
+MatrixXd Laplacian::BuildidentityMatrix()
+{
+
+  int Nx,Ny;
+  Nx=_df -> Get_Nx();
+  Ny=_df -> Get_Ny();
+  SparseMatrix<double> I(Nx*Ny,Nx*Ny);
+  vector<Triplet<double>> triplets;
+  for (int i=0; i<I.rows(); ++i)
+  {
+    triplets.push_back({i,i,1.});
+    if (i > 0)
+      triplets.push_back({i,i-1,0.});
+    if (i < I.rows()-1)
+      triplets.push_back({i,i+1,0.});
+  }
+  I.setFromTriplets(triplets.begin(), triplets.end());
+};
+
+MatrixXd Laplacian::Get_IMatrix()
+{
+  MatrixXd I=Laplacian::BuildidentityMatrix(); //some stuff here does not exec well
+  return I;
 };
 
 
