@@ -29,16 +29,46 @@ TimeScheme(data_file,lap)
 {
 }
 
-void EulerScheme::Integrate()
+void EulerScheme::Integrate(double t)
 {
-    MatrixXd H,I;
-    VectorXd F;
+    MatrixXd H;
+    VectorXd F,product;
     double dt,sigma;
+    int Nx,Ny;
     sigma = _df -> Get_sigma();
     dt = _df -> Get_dt();
 
     H= _lap -> Get_Matrix();
-}
+    F= _lap -> BuildSourceTerm(t);
+
+    Nx=_df -> Get_Nx();
+    Ny=_df -> Get_Ny();
+
+    _solution.resize(Nx*Ny);
+    product.resize(Nx*Ny);
+
+    product=H * _solution ;
+
+    for (int i=0; _solution.size(); i++)
+    {
+      _solution[i] = _solution[i] + (product[i]*(-sigma) + F[i] )*dt;
+    }
+};
+
+VectorXd EulerScheme::solve()
+{
+  double t0,tfinal,dt,t;
+  t0 = _df -> Get_t0();
+  tfinal = _df -> Get_tfinal();
+  dt = _df -> Get_dt();
+  t=t0;
+  while(t<tfinal)
+  {
+    EulerScheme::Integrate(t);
+    t=t+dt;
+  }
+  return _solution;
+};
 
 
 //----implicit euler scheme

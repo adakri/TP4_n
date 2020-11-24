@@ -26,15 +26,16 @@ int main(int argc, char** argv)
   Laplacian* lap = new Laplacian(function, df);
   // Pointeur vers la classe TimeScheme (discrétisation en temps=)
   TimeScheme* time_scheme = NULL;
-  
-  
+
+
   //intermediate tests
   cout<<"---------------------this is your intermediate test-----------------"<<endl;
   cout<<"---------------------this is your laplacian matrix-----------------"<<endl;
   MatrixXd M= lap -> Get_Matrix();
   cout<<M<<endl;
   cout<<"---------------------this is your identity matrix-----------------"<<endl;
-  MatrixXd I= lap -> Get_IMatrix();
+  MatrixXd I= lap -> BuildidentityMatrix();
+  cout<<"---------------------the op works-----------------"<<endl;
   cout<<I<<endl;
 
 //  VectorXd exact_sol = lap->ExactSolution(df->Get_tfinal());
@@ -42,22 +43,12 @@ int main(int argc, char** argv)
 //  double error = ((approx_sol-exact_sol).array().abs()).maxCoeff();
 //  cout << "Erreur = " << error << endl;
   cout<<"---------source term------"<<endl;
-  VectorXd source_term = lap -> Getsource_term();
+  VectorXd source_term = lap -> BuildSourceTerm(0.);
   cout<<source_term<<endl;
 
 
   cout<<"---------------------the end-----------------"<<endl;
-  //Tests
-  int Nx,Ny;
-  Nx= df ->Get_Nx();
-  Ny= df ->Get_Ny();
-  const int dim(Nx*Ny);
-  MatrixXd Mat;
-  VectorXd Vect;
-  Mat = lap -> Get_Matrix();
-  Vect = lap -> Getsource_term();
-  cout<<Mat<<endl;
-  cout<<Vect<<endl;
+
 
   int int_euler_scheme(1);
   if (df->Get_scheme() == "ImplicitEuler") {int_euler_scheme = 2;}

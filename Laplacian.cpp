@@ -32,7 +32,7 @@ VectorXd Laplacian::InitialCondition()
   {
     for(int j=0; j<Ny; j++)
     {
-      cond_init(i+j*Nx)=_fct -> InitialCondition(xmin+i*hx,ymin+j*hy);
+      cond_init(i+j*Nx)=_fct -> InitialCondition(xmin+(i+1)*hx,ymin+(j+1)*hy);
     }
   }
   return cond_init;
@@ -47,40 +47,34 @@ MatrixXd Laplacian::BuildLaplacianMatrix()
   hx=_df -> Get_hx();
   hy=_df -> Get_hy();
 
-  //construction de B
-  double a,b;
-  a=1./(hx*hx+hy*hy);
+  //construction de H
+  double a,b,c;
+  a=2./(hx*hx)+2./(hy*hy);
   b=-1/(hx*hx);
-  SparseMatrix<double> B(Nx,Ny);
+  c=-1/(hy*hy);
+  SparseMatrix<double> H(Nx*Ny,Nx*Ny);
   vector<Triplet<double>> triplets;
-  for (int i=0; i<B.rows(); ++i)
+  for (int i=0; i<Ny; i++)
   {
-    triplets.push_back({i,i,a});
-    if (i > 0)
-      triplets.push_back({i,i-1,b});
-    if (i < B.rows()-1)
-      triplets.push_back({i,i+1,b});
+    int k= i*Nx;
+    for (int j=0; j<Nx; j++)
+    {
+      triplets.push_back({k+j,k+j,a});
+      if (j <Nx-1)
+        triplets.push_back({k+j,k+j+1,b});
+      if (k+j+Nx < H.rows())
+        triplets.push_back({k+j,k+j+Nx,c});
+      if (j < Nx-1)
+        triplets.push_back({k+j+1,k+j,b});
+      if (k+j+Nx < H.rows())
+        triplets.push_back({k+j+Nx,k+j,c});
+    }
   }
-  B.setFromTriplets(triplets.begin(), triplets.end());
-
-
-  //contruire T
-  b=-1/(hy*hy);
-  SparseMatrix<double> T(Nx,Ny);
-  vector<Triplet<double>> triplets1;
-  for (int i=0; i<T.rows(); ++i)
-  {
-    triplets1.push_back({i,i,b});
-    if (i > 0)
-      triplets1.push_back({i,i-1,0.});
-    if (i < T.rows()-1)
-      triplets1.push_back({i,i+1,0.});
-  }
-  T.setFromTriplets(triplets1.begin(), triplets1.end());
+  H.setFromTriplets(triplets.begin(), triplets.end());
   //construction de H à continuer
-  
 
-  return B;
+
+  return H;
   }
 
 
@@ -122,20 +116,7 @@ MatrixXd Laplacian::Get_Matrix()
 
 VectorXd Laplacian::Getsource_term()
 {
-  int Nx,Ny;
-  double xmin,xmax,ymin,ymax,hx,hy;
-  xmin= _df -> Get_xmin();
-  // xmax= _df -> Get_xmax();
-  ymin= _df -> Get_ymin();
-  // ymax= _df -> Get_ymax();
-  hx= _df ->Get_hx();
-  hy= _df ->Get_hy();
 
-  Nx=_df -> Get_Nx();
-  Ny=_df -> Get_Ny();
-  VectorXd source_term(Nx*Ny);
-
-  return source_term;
 };
 
 //idendity matrix
@@ -157,11 +138,12 @@ MatrixXd Laplacian::BuildidentityMatrix()
       triplets.push_back({i,i+1,0.});
   }
   I.setFromTriplets(triplets.begin(), triplets.end());
+  return I;
 };
 
-MatrixXd Laplacian::Get_IMatrix()
+MatrixXd Laplacian::Get_idendityMatrix()
 {
-  MatrixXd I=Laplacian::BuildidentityMatrix(); //some stuff here does not exec well
+  MatrixXd I=Laplacian::BuildidentityMatrix(); //dummy
   return I;
 };
 

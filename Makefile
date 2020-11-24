@@ -10,14 +10,14 @@ DEBUG_FLAG = -g -DDEBUG -I /net/m/adakri/tp_cpp/eigen-3.3.8/Eigen/ -std=c++11
 CXX_FLAGS = $(DEBUG_FLAG)
 
 # Le nom de l'exécutable
-PROG = laplacian
+PROG = run
 
 # Les fichiers source à compiler
 SRC = main.cc TimeScheme.cpp Laplacian.cpp DataFile.cpp Function.cpp
 
 # La commande complète : compile seulement si un fichier a été modifié
 $(PROG) : $(SRC)
-	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)
+	$(CC) $(SRC) $(CXX_FLAGS) -w -o $(PROG)
 # Évite de devoir connaitre le nom de l'exécutable
 all : $(PROG)
 

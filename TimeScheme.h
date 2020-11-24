@@ -9,6 +9,8 @@ protected:
   DataFile* _df;
   // Pointeur vers le laplacien
   Laplacian* _lap;
+  //pointeur vers solution vecteur
+  Eigen::VectorXd _solution;
 
 public:
   // Constructeur par défaut
@@ -19,14 +21,15 @@ public:
   //sauver la solution
   void SaveSol(Eigen::VectorXd sol, std::string name_sol, int n);
   Eigen::VectorXd GetSolution();
-  
+
 };
 
 class EulerScheme : public TimeScheme
 {
 public:
   EulerScheme(DataFile* data_file, Laplacian* lap);
-  void Integrate();
+  void Integrate(double t);
+  Eigen::VectorXd solve();
 };
 
 class ImplicitEulerScheme : public TimeScheme
@@ -34,6 +37,8 @@ class ImplicitEulerScheme : public TimeScheme
 public:
   ImplicitEulerScheme(DataFile* data_file, Laplacian* lap);
   void Integrate();
+  Eigen::VectorXd solve();
+
 
 };
 

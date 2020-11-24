@@ -25,9 +25,9 @@ public:
 
 	Eigen::MatrixXd Get_Matrix();
 
-	Eigen::MatrixXd Get_IMatrix();
+	Eigen::MatrixXd Get_idendityMatrix(); //dummy
 
-	Eigen::VectorXd Getsource_term();
+	Eigen::VectorXd Getsource_term(); //dummy
 
 };
 
